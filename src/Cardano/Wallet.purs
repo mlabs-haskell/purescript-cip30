@@ -29,6 +29,7 @@ module Cardano.Wallet
   , nami
   , flint
   , eternl
+  , yoroi
   ) where
 
 import Prelude
@@ -135,6 +136,10 @@ flint = WalletName "flint"
 -- | Gero wallet name
 gero :: WalletName
 gero = WalletName "gerowallet"
+
+-- | Yoroi wallet name
+yoroi :: WalletName
+yoroi = WalletName "yoroi"
 
 ------------------------------------------------------------------------------------
 -- FFI
