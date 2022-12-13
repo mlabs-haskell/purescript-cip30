@@ -29,6 +29,7 @@ module Cardano.Wallet
   , nami
   , flint
   , eternl
+  , yoroi
   ) where
 
 import Prelude
@@ -118,7 +119,7 @@ availableWallets = filterA isWalletAvailable allWallets
 -- If you are missing your wallet it's easy to extend it
 -- by wrapping name tag to @WalletName@ newtype
 allWallets :: Array WalletName
-allWallets = [ nami, eternl, flint, gero ]
+allWallets = [ nami, eternl, flint, gero, yoroi ]
 
 -- | Eternl wallet name
 eternl :: WalletName
@@ -135,6 +136,10 @@ flint = WalletName "flint"
 -- | Gero wallet name
 gero :: WalletName
 gero = WalletName "gerowallet"
+
+-- | Yoroi wallet name
+yoroi :: WalletName
+yoroi = WalletName "yoroi"
 
 ------------------------------------------------------------------------------------
 -- FFI
