@@ -119,7 +119,7 @@ availableWallets = filterA isWalletAvailable allWallets
 -- If you are missing your wallet it's easy to extend it
 -- by wrapping name tag to @WalletName@ newtype
 allWallets :: Array WalletName
-allWallets = [ nami, eternl, flint, gero ]
+allWallets = [ nami, eternl, flint, gero, yoroi ]
 
 -- | Eternl wallet name
 eternl :: WalletName
