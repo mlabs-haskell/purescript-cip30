@@ -30,6 +30,9 @@ module Cardano.Wallet
   , flint
   , eternl
   , yoroi
+  , lace
+  , typhon
+  , exodus
   ) where
 
 import Prelude
