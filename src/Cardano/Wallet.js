@@ -1,24 +1,24 @@
 "use strict";
 
-export const _getWalletApi = walletName => () => 
+exports._getWalletApi = walletName => () => 
   window.cardano[walletName].enable();
 
-export const _isEnabled = walletName => () => 
+exports._isEnabled = walletName => () => 
   window.cardano[walletName].isEnabled();
 
-export const _getBalance = api => () => api.getBalance();
-export const _getChangeAddress = api => () => api.getChangeAddress();
-export const _getCollateral = api => params => () => api.getCollateral(params);
-export const _getNetworkId = api => () => api.getNetworkId();
-export const _getRewardAddresses = api => () => api.getRewardAddresses();
-export const _getUnusedAddresses = api => () => api.getUnusedAddresses();
-export const _getUsedAddresses = api => page => () => api.getUsedAddresses(page);
-export const _signTx = api => tx => partial => () => api.signTx(tx, partial);
-export const _signData = api => addr => payload => () => api.signData(addr, payload);
-export const _getUtxos = api => paginate => () => api.getUtxos(paginate);
-export const _submitTx = api => tx => () => api.submitTx(tx.to_hex());
+exports._getBalance = api => () => api.getBalance();
+exports._getChangeAddress = api => () => api.getChangeAddress();
+exports._getCollateral = api => params => () => api.getCollateral(params);
+exports._getNetworkId = api => () => api.getNetworkId();
+exports._getRewardAddresses = api => () => api.getRewardAddresses();
+exports._getUnusedAddresses = api => () => api.getUnusedAddresses();
+exports._getUsedAddresses = api => page => () => api.getUsedAddresses(page);
+exports._signTx = api => tx => partial => () => api.signTx(tx, partial);
+exports._signData = api => addr => payload => () => api.signData(addr, payload);
+exports._getUtxos = api => paginate => () => api.getUtxos(paginate);
+exports._submitTx = api => tx => () => api.submitTx(tx.to_hex());
 
-export const isWalletAvailable = walletName => () =>
+exports.isWalletAvailable = walletName => () =>
    typeof window.cardano != "undefined" &&
    typeof window.cardano[walletName] != "undefined" &&
    typeof window.cardano[walletName].enable == "function";
