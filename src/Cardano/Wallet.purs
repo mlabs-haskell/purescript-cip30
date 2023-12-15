@@ -3,14 +3,14 @@
 --
 -- Code works by inspection of cardano object which should be
 -- injected by the wallet to the window.
-module Cardano.Wallet
+module Cardano.Wallet.Cip30
   ( Api
   , Bytes
   , Cbor
   , Cip30DataSignature
   , NetworkId
   , Paginate
-  , WalletName(..)
+  , WalletName
   , enable
   , getApiVersion
   , getName
@@ -28,7 +28,7 @@ module Cardano.Wallet
   , signTx
   , signData
   , submitTx
-  , availableWallets
+  , getAvailableWallets
   ) where
 
 import Prelude
@@ -43,7 +43,6 @@ import Data.Array (filterA)
 type Bytes = String
 type Cbor = String
 type NetworkId = Int
-type DataUri = String
 type WalletName = String
 
 type Paginate =
@@ -57,15 +56,6 @@ type Cip30DataSignature =
   { key :: Cbor
   , signature :: Cbor
   }
-
-getApiVersion :: WalletName -> Effect String
-getApiVersion walletName = _getApiVersion walletName
-
-getName :: WalletName -> Effect String
-getName walletName = _getName walletName
-
-getIcon :: WalletName -> Effect DataUri
-getIcon walletName = _getIcon walletName
 
 -- | Enables wallet and reads Cip30 wallet API if wallet is available
 enable :: WalletName -> Aff Api
@@ -119,8 +109,8 @@ isEnabled = toAffE <<< _isEnabled
 -- | Reads all wallets that are available in the browser.
 -- It uses @allWallets@ under the hood and checks whether
 -- field that corresponds to wallet name available on cardano object
-availableWallets :: Effect (Array WalletName)
-availableWallets =
+getAvailableWallets :: Effect (Array WalletName)
+getAvailableWallets =
   allWallets >>= \wallets -> filterA isWalletAvailable wallets
 
 -- | Get all available wallets.
@@ -145,8 +135,8 @@ foreign import _signData :: Api -> Cbor -> Bytes -> Effect (Promise Cip30DataSig
 foreign import _isEnabled :: WalletName -> Effect (Promise Boolean)
 foreign import _submitTx :: Api -> Cbor -> Effect (Promise String)
 foreign import _getWalletApi :: WalletName -> Effect (Promise Api)
-foreign import _getApiVersion :: WalletName -> Effect String
-foreign import _getName :: WalletName -> Effect String
-foreign import _getIcon :: WalletName -> Effect DataUri
+foreign import getApiVersion :: WalletName -> Effect String
+foreign import getName :: WalletName -> Effect String
+foreign import getIcon :: WalletName -> Effect String
 foreign import isWalletAvailable :: WalletName -> Effect Boolean
 foreign import allWalletTags :: Effect (Array WalletName)

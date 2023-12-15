@@ -1,18 +1,18 @@
 "use strict";
 
-export const _getWalletApi = walletName => () => 
+export const _getWalletApi = walletName => () =>
   window.cardano[walletName].enable();
 
-export const _isEnabled = walletName => () => 
+export const _isEnabled = walletName => () =>
   window.cardano[walletName].isEnabled();
 
-export const _getApiVersion = walletName => () => 
+export const getApiVersion = walletName => () =>
   window.cardano[walletName].apiVersion;
 
-export const _getName = walletName => () => 
+export const getName = walletName => () =>
   window.cardano[walletName].name;
 
-export const _getIcon = walletName => () => 
+export const getIcon = walletName => () =>
   window.cardano[walletName].icon;
 
 export const _getBalance = api => () => api.getBalance();
