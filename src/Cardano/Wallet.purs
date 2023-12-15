@@ -1,8 +1,8 @@
 -- | Interact with the wallet over CIP-30 interface
--- description: <https://cips.cardano.org/cips/cip30/>
---
--- Code works by inspection of cardano object which should be
--- injected by the wallet to the window.
+-- | description: https://cips.cardano.org/cips/cip30/
+-- |
+-- | Code works by inspection of `window.cardano` object which should be
+-- | injected by the wallet to the window.
 module Cardano.Wallet.Cip30
   ( Bytes
   , Cbor
@@ -32,13 +32,16 @@ module Cardano.Wallet.Cip30
   ) where
 
 import Prelude
-import Effect (Effect)
-import Effect.Aff (Aff)
+
 import Control.Promise (Promise, toAffE)
-import Data.Maybe (Maybe, fromMaybe)
+import Data.Array (filterA)
+import Data.Maybe (Maybe, fromMaybe, maybe)
 import Data.Nullable (Nullable)
 import Data.Nullable as Nullable
-import Data.Array (filterA)
+import Effect (Effect)
+import Effect.Aff (Aff)
+import Literals.Undefined (undefined)
+import Untagged.Union (UndefinedOr, asOneOf)
 
 type Bytes = String
 type Cbor = String
@@ -67,9 +70,9 @@ getBalance api = toAffE (_getBalance api)
 getChangeAddress :: Cip30Connection -> Aff Cbor
 getChangeAddress api = toAffE (_getChangeAddress api)
 
-getCollateral :: Cip30Connection -> Maybe Cbor -> Aff (Maybe Cbor)
-getCollateral api mParams =
-  Nullable.toMaybe <$> toAffE (_getCollateral api (Nullable.toNullable mParams))
+getCollateral :: Cip30Connection -> Cbor -> Aff (Maybe Cbor)
+getCollateral api amount =
+  Nullable.toMaybe <$> toAffE (_getCollateral api amount)
 
 getNetworkId :: Cip30Connection -> Aff NetworkId
 getNetworkId api = toAffE (_getNetworkId api)
@@ -80,13 +83,14 @@ getRewardAddresses api = toAffE (_getRewardAddresses api)
 getUnusedAddresses :: Cip30Connection -> Aff (Array Cbor)
 getUnusedAddresses api = toAffE (_getUnusedAddresses api)
 
-getUsedAddresses :: Cip30Connection -> Paginate -> Aff (Array Cbor)
-getUsedAddresses api paginate = toAffE (_getUsedAddresses api paginate)
+getUsedAddresses :: Cip30Connection -> Maybe Paginate -> Aff (Array Cbor)
+getUsedAddresses api paginate =
+  toAffE (_getUsedAddresses api (maybe (asOneOf undefined) asOneOf paginate))
 
 getUtxos :: Cip30Connection -> Maybe Paginate -> Aff (Array Cbor)
 getUtxos api mPaginate =
   fromMaybe [] <<< Nullable.toMaybe
-    <$> toAffE (_getUtxos api (Nullable.toNullable mPaginate))
+    <$> toAffE (_getUtxos api (maybe (asOneOf undefined) asOneOf mPaginate))
 
 signTx :: Cip30Connection -> Cbor -> Boolean -> Aff Cbor
 signTx api tx isPartialSign = toAffE (_signTx api tx isPartialSign)
@@ -98,8 +102,6 @@ submitTx :: Cip30Connection -> Cbor -> Aff String
 submitTx api tx = toAffE (_submitTx api tx)
 
 -- | Checks weather wallet is enabled.
--- Enabled means that user has given permission to our code to interact
--- with wallet over Cip30
 isEnabled :: WalletName -> Aff Boolean
 isEnabled = toAffE <<< _isEnabled
 
@@ -107,15 +109,11 @@ isEnabled = toAffE <<< _isEnabled
 -- common wallet names
 
 -- | Reads all wallets that are available in the browser.
--- It uses @allWallets@ under the hood and checks whether
--- field that corresponds to wallet name available on cardano object
 getAvailableWallets :: Effect (Array WalletName)
 getAvailableWallets =
   allWallets >>= \wallets -> filterA isWalletAvailable wallets
 
 -- | Get all available wallets.
--- If you are missing your wallet it's easy to extend it
--- by wrapping name tag to @WalletName@ newtype
 allWallets :: Effect (Array WalletName)
 allWallets = allWalletTags
 
@@ -124,12 +122,12 @@ allWallets = allWalletTags
 
 foreign import _getBalance :: Cip30Connection -> Effect (Promise Cbor)
 foreign import _getChangeAddress :: Cip30Connection -> Effect (Promise Cbor)
-foreign import _getCollateral :: Cip30Connection -> Nullable Cbor -> Effect (Promise (Nullable Cbor))
+foreign import _getCollateral :: Cip30Connection -> Cbor -> Effect (Promise (Nullable Cbor))
 foreign import _getNetworkId :: Cip30Connection -> Effect (Promise NetworkId)
 foreign import _getRewardAddresses :: Cip30Connection -> Effect (Promise (Array Cbor))
 foreign import _getUnusedAddresses :: Cip30Connection -> Effect (Promise (Array Cbor))
-foreign import _getUsedAddresses :: Cip30Connection -> Paginate -> Effect (Promise (Array Cbor))
-foreign import _getUtxos :: Cip30Connection -> Nullable Paginate -> Effect (Promise (Nullable (Array Cbor)))
+foreign import _getUsedAddresses :: Cip30Connection -> UndefinedOr Paginate -> Effect (Promise (Array Cbor))
+foreign import _getUtxos :: Cip30Connection -> UndefinedOr Paginate -> Effect (Promise (Nullable (Array Cbor)))
 foreign import _signTx :: Cip30Connection -> Cbor -> Boolean -> Effect (Promise Cbor)
 foreign import _signData :: Cip30Connection -> Cbor -> Bytes -> Effect (Promise Cip30DataSignature)
 foreign import _isEnabled :: WalletName -> Effect (Promise Boolean)
