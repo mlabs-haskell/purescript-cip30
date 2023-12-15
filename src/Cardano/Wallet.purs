@@ -4,9 +4,9 @@
 -- Code works by inspection of cardano object which should be
 -- injected by the wallet to the window.
 module Cardano.Wallet.Cip30
-  ( Api
-  , Bytes
+  ( Bytes
   , Cbor
+  , Cip30Connection
   , Cip30DataSignature
   , NetworkId
   , Paginate
@@ -50,7 +50,7 @@ type Paginate =
   , page :: Int
   }
 
-foreign import data Api :: Type
+foreign import data Cip30Connection :: Type
 
 type Cip30DataSignature =
   { key :: Cbor
@@ -58,43 +58,43 @@ type Cip30DataSignature =
   }
 
 -- | Enables wallet and reads Cip30 wallet API if wallet is available
-enable :: WalletName -> Aff Api
+enable :: WalletName -> Aff Cip30Connection
 enable walletName = toAffE (_getWalletApi walletName)
 
-getBalance :: Api -> Aff Cbor
+getBalance :: Cip30Connection -> Aff Cbor
 getBalance api = toAffE (_getBalance api)
 
-getChangeAddress :: Api -> Aff Cbor
+getChangeAddress :: Cip30Connection -> Aff Cbor
 getChangeAddress api = toAffE (_getChangeAddress api)
 
-getCollateral :: Api -> Maybe Cbor -> Aff (Maybe Cbor)
+getCollateral :: Cip30Connection -> Maybe Cbor -> Aff (Maybe Cbor)
 getCollateral api mParams =
   Nullable.toMaybe <$> toAffE (_getCollateral api (Nullable.toNullable mParams))
 
-getNetworkId :: Api -> Aff NetworkId
+getNetworkId :: Cip30Connection -> Aff NetworkId
 getNetworkId api = toAffE (_getNetworkId api)
 
-getRewardAddresses :: Api -> Aff (Array Cbor)
+getRewardAddresses :: Cip30Connection -> Aff (Array Cbor)
 getRewardAddresses api = toAffE (_getRewardAddresses api)
 
-getUnusedAddresses :: Api -> Aff (Array Cbor)
+getUnusedAddresses :: Cip30Connection -> Aff (Array Cbor)
 getUnusedAddresses api = toAffE (_getUnusedAddresses api)
 
-getUsedAddresses :: Api -> Paginate -> Aff (Array Cbor)
+getUsedAddresses :: Cip30Connection -> Paginate -> Aff (Array Cbor)
 getUsedAddresses api paginate = toAffE (_getUsedAddresses api paginate)
 
-getUtxos :: Api -> Maybe Paginate -> Aff (Array Cbor)
+getUtxos :: Cip30Connection -> Maybe Paginate -> Aff (Array Cbor)
 getUtxos api mPaginate =
   fromMaybe [] <<< Nullable.toMaybe
     <$> toAffE (_getUtxos api (Nullable.toNullable mPaginate))
 
-signTx :: Api -> Cbor -> Boolean -> Aff Cbor
+signTx :: Cip30Connection -> Cbor -> Boolean -> Aff Cbor
 signTx api tx isPartialSign = toAffE (_signTx api tx isPartialSign)
 
-signData :: Api -> Cbor -> Bytes -> Aff Cip30DataSignature
+signData :: Cip30Connection -> Cbor -> Bytes -> Aff Cip30DataSignature
 signData api addr payload = toAffE (_signData api addr payload)
 
-submitTx :: Api -> Cbor -> Aff String
+submitTx :: Cip30Connection -> Cbor -> Aff String
 submitTx api tx = toAffE (_submitTx api tx)
 
 -- | Checks weather wallet is enabled.
@@ -122,19 +122,19 @@ allWallets = allWalletTags
 ------------------------------------------------------------------------------------
 -- FFI
 
-foreign import _getBalance :: Api -> Effect (Promise Cbor)
-foreign import _getChangeAddress :: Api -> Effect (Promise Cbor)
-foreign import _getCollateral :: Api -> Nullable Cbor -> Effect (Promise (Nullable Cbor))
-foreign import _getNetworkId :: Api -> Effect (Promise NetworkId)
-foreign import _getRewardAddresses :: Api -> Effect (Promise (Array Cbor))
-foreign import _getUnusedAddresses :: Api -> Effect (Promise (Array Cbor))
-foreign import _getUsedAddresses :: Api -> Paginate -> Effect (Promise (Array Cbor))
-foreign import _getUtxos :: Api -> Nullable Paginate -> Effect (Promise (Nullable (Array Cbor)))
-foreign import _signTx :: Api -> Cbor -> Boolean -> Effect (Promise Cbor)
-foreign import _signData :: Api -> Cbor -> Bytes -> Effect (Promise Cip30DataSignature)
+foreign import _getBalance :: Cip30Connection -> Effect (Promise Cbor)
+foreign import _getChangeAddress :: Cip30Connection -> Effect (Promise Cbor)
+foreign import _getCollateral :: Cip30Connection -> Nullable Cbor -> Effect (Promise (Nullable Cbor))
+foreign import _getNetworkId :: Cip30Connection -> Effect (Promise NetworkId)
+foreign import _getRewardAddresses :: Cip30Connection -> Effect (Promise (Array Cbor))
+foreign import _getUnusedAddresses :: Cip30Connection -> Effect (Promise (Array Cbor))
+foreign import _getUsedAddresses :: Cip30Connection -> Paginate -> Effect (Promise (Array Cbor))
+foreign import _getUtxos :: Cip30Connection -> Nullable Paginate -> Effect (Promise (Nullable (Array Cbor)))
+foreign import _signTx :: Cip30Connection -> Cbor -> Boolean -> Effect (Promise Cbor)
+foreign import _signData :: Cip30Connection -> Cbor -> Bytes -> Effect (Promise Cip30DataSignature)
 foreign import _isEnabled :: WalletName -> Effect (Promise Boolean)
-foreign import _submitTx :: Api -> Cbor -> Effect (Promise String)
-foreign import _getWalletApi :: WalletName -> Effect (Promise Api)
+foreign import _submitTx :: Cip30Connection -> Cbor -> Effect (Promise String)
+foreign import _getWalletApi :: WalletName -> Effect (Promise Cip30Connection)
 foreign import getApiVersion :: WalletName -> Effect String
 foreign import getName :: WalletName -> Effect String
 foreign import getIcon :: WalletName -> Effect String
