@@ -33,6 +33,10 @@ module Cardano.Wallet
   , nami
   , flint
   , eternl
+  , yoroi
+  , lace
+  , typhon
+  , exodus
   ) where
 
 import Prelude
@@ -126,7 +130,7 @@ isEnabled = toAffE <<< _isEnabled
 -- It uses @allWallets@ under the hood and checks whether
 -- field that corresponds to wallet name available on cardano object
 availableWallets :: Effect (Array WalletName)
-availableWallets = 
+availableWallets =
   allWallets >>= \wallets -> filterA isWalletAvailable wallets
 
 -- | Get all available wallets.
@@ -151,6 +155,22 @@ flint = WalletName "flint"
 gero :: WalletName
 gero = WalletName "gerowallet"
 
+-- | Yoroi wallet name
+yoroi :: WalletName
+yoroi = WalletName "yoroi"
+
+-- | Lace wallet name
+lace :: WalletName
+lace = WalletName "lace"
+
+-- | Typhon wallet name
+typhon :: WalletName
+typhon = WalletName "typhoncip30"
+
+-- | Exodus wallet name
+exodus :: WalletName
+exodus = WalletName "exodus"
+
 ------------------------------------------------------------------------------------
 -- FFI
 
@@ -172,4 +192,3 @@ foreign import _getName :: WalletName -> Effect String
 foreign import _getIcon :: WalletName -> Effect DataUri
 foreign import isWalletAvailable :: WalletName -> Effect Boolean
 foreign import allWalletTags :: Effect (Array String)
-
