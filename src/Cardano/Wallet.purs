@@ -29,14 +29,6 @@ module Cardano.Wallet
   , signData
   , submitTx
   , availableWallets
-  , gero
-  , nami
-  , flint
-  , eternl
-  , yoroi
-  , lace
-  , typhon
-  , exodus
   ) where
 
 import Prelude
@@ -52,6 +44,7 @@ type Bytes = String
 type Cbor = String
 type NetworkId = Int
 type DataUri = String
+type WalletName = String
 
 type Paginate =
   { limit :: Int
@@ -64,9 +57,6 @@ type Cip30DataSignature =
   { key :: Cbor
   , signature :: Cbor
   }
-
--- | Wrapper for wallet names. see nami, flint, etc for examples.
-newtype WalletName = WalletName String
 
 getApiVersion :: WalletName -> Effect String
 getApiVersion walletName = _getApiVersion walletName
@@ -137,39 +127,7 @@ availableWallets =
 -- If you are missing your wallet it's easy to extend it
 -- by wrapping name tag to @WalletName@ newtype
 allWallets :: Effect (Array WalletName)
-allWallets = map WalletName <$> allWalletTags
-
--- | Eternl wallet name
-eternl :: WalletName
-eternl = WalletName "eternl"
-
--- | Nami wallet name
-nami :: WalletName
-nami = WalletName "nami"
-
--- | Flint wallet name
-flint :: WalletName
-flint = WalletName "flint"
-
--- | Gero wallet name
-gero :: WalletName
-gero = WalletName "gerowallet"
-
--- | Yoroi wallet name
-yoroi :: WalletName
-yoroi = WalletName "yoroi"
-
--- | Lace wallet name
-lace :: WalletName
-lace = WalletName "lace"
-
--- | Typhon wallet name
-typhon :: WalletName
-typhon = WalletName "typhoncip30"
-
--- | Exodus wallet name
-exodus :: WalletName
-exodus = WalletName "exodus"
+allWallets = allWalletTags
 
 ------------------------------------------------------------------------------------
 -- FFI
@@ -191,4 +149,4 @@ foreign import _getApiVersion :: WalletName -> Effect String
 foreign import _getName :: WalletName -> Effect String
 foreign import _getIcon :: WalletName -> Effect DataUri
 foreign import isWalletAvailable :: WalletName -> Effect Boolean
-foreign import allWalletTags :: Effect (Array String)
+foreign import allWalletTags :: Effect (Array WalletName)
