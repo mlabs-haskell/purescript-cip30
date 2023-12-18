@@ -87,9 +87,9 @@ getUsedAddresses :: Cip30Connection -> Maybe Paginate -> Aff (Array Cbor)
 getUsedAddresses api paginate =
   toAffE (_getUsedAddresses api (maybe (asOneOf undefined) asOneOf paginate))
 
-getUtxos :: Cip30Connection -> Maybe Paginate -> Aff (Array Cbor)
+getUtxos :: Cip30Connection -> Maybe Paginate -> Aff (Maybe (Array Cbor))
 getUtxos api mPaginate =
-  fromMaybe [] <<< Nullable.toMaybe
+  Nullable.toMaybe
     <$> toAffE (_getUtxos api (maybe (asOneOf undefined) asOneOf mPaginate))
 
 signTx :: Cip30Connection -> Cbor -> Boolean -> Aff Cbor
