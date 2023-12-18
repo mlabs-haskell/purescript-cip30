@@ -70,7 +70,7 @@ getBalance api = toAffE (_getBalance api)
 getChangeAddress :: Cip30Connection -> Aff Cbor
 getChangeAddress api = toAffE (_getChangeAddress api)
 
-getCollateral :: Cip30Connection -> Cbor -> Aff (Maybe Cbor)
+getCollateral :: Cip30Connection -> Cbor -> Aff (Maybe (Array Cbor))
 getCollateral api amount =
   Nullable.toMaybe <$> toAffE (_getCollateral api amount)
 
@@ -122,7 +122,7 @@ allWallets = allWalletTags
 
 foreign import _getBalance :: Cip30Connection -> Effect (Promise Cbor)
 foreign import _getChangeAddress :: Cip30Connection -> Effect (Promise Cbor)
-foreign import _getCollateral :: Cip30Connection -> Cbor -> Effect (Promise (Nullable Cbor))
+foreign import _getCollateral :: Cip30Connection -> Cbor -> Effect (Promise (Nullable (Array Cbor)))
 foreign import _getNetworkId :: Cip30Connection -> Effect (Promise NetworkId)
 foreign import _getRewardAddresses :: Cip30Connection -> Effect (Promise (Array Cbor))
 foreign import _getUnusedAddresses :: Cip30Connection -> Effect (Promise (Array Cbor))
