@@ -8,34 +8,37 @@ module Cardano.Wallet.Cip30
   , Cbor
   , Cip30Connection
   , Cip30DataSignature
+  , Cip30Extension
   , NetworkId
   , Paginate
   , WalletName
   , enable
   , getApiVersion
-  , getName
-  , getIcon
-  , isEnabled
-  , isWalletAvailable
+  , getAvailableWallets
   , getBalance
   , getChangeAddress
   , getCollateral
+  , getExtensions
+  , getIcon
+  , getName
   , getNetworkId
   , getRewardAddresses
+  , getSupportedExtensions
   , getUnusedAddresses
   , getUsedAddresses
   , getUtxos
-  , signTx
+  , isEnabled
+  , isWalletAvailable
   , signData
+  , signTx
   , submitTx
-  , getAvailableWallets
   ) where
 
 import Prelude
 
 import Control.Promise (Promise, toAffE)
 import Data.Array (filterA)
-import Data.Maybe (Maybe, fromMaybe, maybe)
+import Data.Maybe (Maybe, maybe)
 import Data.Nullable (Nullable)
 import Data.Nullable as Nullable
 import Effect (Effect)
@@ -43,17 +46,20 @@ import Effect.Aff (Aff)
 import Literals.Undefined (undefined)
 import Untagged.Union (UndefinedOr, asOneOf)
 
+-- | A datatype representing a CIP-30 connection object.
+foreign import data Cip30Connection :: Type
+
 type Bytes = String
 type Cbor = String
 type NetworkId = Int
 type WalletName = String
+type Cip30Extension = { cip :: Int }
+
 
 type Paginate =
   { limit :: Int
   , page :: Int
   }
-
-foreign import data Cip30Connection :: Type
 
 type Cip30DataSignature =
   { key :: Cbor
@@ -61,8 +67,11 @@ type Cip30DataSignature =
   }
 
 -- | Enables wallet and reads Cip30 wallet API if wallet is available
-enable :: WalletName -> Aff Cip30Connection
-enable walletName = toAffE (_getWalletApi walletName)
+enable :: WalletName -> Array Cip30Extension -> Aff Cip30Connection
+enable walletName exts = toAffE (_getWalletApi walletName exts)
+
+getExtensions :: Cip30Connection -> Aff (Array Cip30Extension)
+getExtensions api = toAffE (_getExtensions api)
 
 getBalance :: Cip30Connection -> Aff Cbor
 getBalance api = toAffE (_getBalance api)
@@ -120,6 +129,7 @@ allWallets = allWalletTags
 ------------------------------------------------------------------------------------
 -- FFI
 
+foreign import _getExtensions :: Cip30Connection -> Effect (Promise (Array Cip30Extension))
 foreign import _getBalance :: Cip30Connection -> Effect (Promise Cbor)
 foreign import _getChangeAddress :: Cip30Connection -> Effect (Promise Cbor)
 foreign import _getCollateral :: Cip30Connection -> Cbor -> Effect (Promise (Nullable (Array Cbor)))
@@ -132,9 +142,10 @@ foreign import _signTx :: Cip30Connection -> Cbor -> Boolean -> Effect (Promise 
 foreign import _signData :: Cip30Connection -> Cbor -> Bytes -> Effect (Promise Cip30DataSignature)
 foreign import _isEnabled :: WalletName -> Effect (Promise Boolean)
 foreign import _submitTx :: Cip30Connection -> Cbor -> Effect (Promise String)
-foreign import _getWalletApi :: WalletName -> Effect (Promise Cip30Connection)
+foreign import _getWalletApi :: WalletName -> Array Cip30Extension -> Effect (Promise Cip30Connection)
 foreign import getApiVersion :: WalletName -> Effect String
 foreign import getName :: WalletName -> Effect String
 foreign import getIcon :: WalletName -> Effect String
+foreign import getSupportedExtensions :: WalletName -> Effect (Array Cip30Extension)
 foreign import isWalletAvailable :: WalletName -> Effect Boolean
 foreign import allWalletTags :: Effect (Array WalletName)
