@@ -1,5 +1,5 @@
 -- | Interact with the wallet over CIP-30 interface
--- | description: https://cips.cardano.org/cips/cip30/
+-- | description: https://cips.cardano.org/cip/CIP-0030
 -- |
 -- | Code works by inspection of `window.cardano` object which should be
 -- | injected by the wallet to the window.
