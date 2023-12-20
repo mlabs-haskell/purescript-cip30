@@ -40,6 +40,7 @@
             default = pkgs.mkShell {
               buildInputs = with pkgs; [
                 nixpkgs-fmt
+                easy-ps.purs
                 easy-ps.purs-tidy
                 easy-ps.spago
                 easy-ps.pscid
@@ -49,6 +50,7 @@
                 nodePackages.prettier
                 fd
                 git
+                nodejs-18_x
               ];
             };
           };
