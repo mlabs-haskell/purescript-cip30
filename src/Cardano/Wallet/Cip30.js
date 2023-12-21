@@ -21,7 +21,7 @@ export const getSupportedExtensions = walletName => () =>
 export const _getExtensions = api => () => api.getExtensions();
 export const _getBalance = api => () => api.getBalance();
 export const _getChangeAddress = api => () => api.getChangeAddress();
-export const _getCollateral = api => params => () => api.getCollateral(params);
+export const _getCollateral = api => amount => () => api.getCollateral(typeof amount === 'undefined' ? undefined : { amount });
 export const _getNetworkId = api => () => api.getNetworkId();
 export const _getRewardAddresses = api => () => api.getRewardAddresses();
 export const _getUnusedAddresses = api => () => api.getUnusedAddresses();
