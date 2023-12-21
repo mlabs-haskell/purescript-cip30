@@ -4,14 +4,18 @@ import Prelude
 
 import Cardano.Wallet.Cip30 (WalletName, enable, getUsedAddresses, getUtxos)
 import Data.Maybe (Maybe(Just, Nothing))
+import Data.Newtype (wrap)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (delay, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Class.Console (log)
 
 -- | This test suite must be bundled and run in the browser.
+-- | Use `make test` to run it.
 main :: Effect Unit
 main = launchAff_ do
+  -- wait for all extensions to inject their API entry points
+  delay (wrap 2000.0)
   walletName <- liftEffect getWallet
   api <- enable walletName []
   do
