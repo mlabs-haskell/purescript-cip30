@@ -7,6 +7,8 @@ CIP-30 defines an interface for the `cardano` object that is injected into the b
 
 Note that it takes some time for wallet extensions to inject the object so it might be beneficial to add a small delay before your first function invocation to interact with the wallet.
 
+There is a more involved PureScript wrapper available, that forces the developer to handle known CIP-30 errors as well: [`purescript-cip30-typesafe`](https://github.com/mlabs-haskell/purescript-cip30-typesafe).
+
 Use this library in pair with [`cardano-serialisation-lib`](https://github.com/Emurgo/cardano-serialization-lib/) (use `to_hex`/`from_hex` methods). PureScript wrapper is also available [here](github.com/mlabs-haskell/purescript-cardano-serialization-lib).
 
 This repo is a fork of the library [originally written by Anton Kholomiov](https://github.com/anton-k/purescript-cip30/).

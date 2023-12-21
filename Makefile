@@ -11,4 +11,5 @@ build:
 	spago build
 
 test:
-	spago test
+	spago bundle-app --main Test.Main --to bundle.js
+	python3 -m http.server --directory .
