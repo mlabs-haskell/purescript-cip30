@@ -80,8 +80,8 @@ getUtxos api mAmount mPaginate =
   Nullable.toMaybe
     <$> toAffE (_getUtxos api amount paginate)
   where
-    amount = maybe (asOneOf undefined) asOneOf mAmount
-    paginate = (maybe (asOneOf undefined) asOneOf mPaginate)
+  amount = maybe (asOneOf undefined) asOneOf mAmount
+  paginate = (maybe (asOneOf undefined) asOneOf mPaginate)
 
 getCollateral :: Api -> Cbor -> Aff (Maybe (Array Cbor))
 getCollateral api amount =

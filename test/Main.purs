@@ -3,7 +3,7 @@ module Test.Main where
 import Prelude
 
 import Cardano.Wallet.Cip30 (WalletName, enable, getUsedAddresses, getUtxos)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(Just, Nothing))
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)

@@ -1,5 +1,9 @@
 {
-  "devDependencies": {
-    "esbuild": "^0.19.10"
-  }
+    "devDependencies": {
+        "esbuild": "^0.19.10"
+    },
+    "prettier": {
+        "arrowParens": "avoid",
+        "trailingComma": "none"
+    }
 }
