@@ -75,10 +75,13 @@ getExtensions api = toAffE (_getExtensions api)
 getNetworkId :: Api -> Aff NetworkId
 getNetworkId api = toAffE (_getNetworkId api)
 
-getUtxos :: Api -> Maybe Paginate -> Aff (Maybe (Array Cbor))
-getUtxos api mPaginate =
+getUtxos :: Api -> Maybe Cbor -> Maybe Paginate -> Aff (Maybe (Array Cbor))
+getUtxos api mAmount mPaginate =
   Nullable.toMaybe
-    <$> toAffE (_getUtxos api (maybe (asOneOf undefined) asOneOf mPaginate))
+    <$> toAffE (_getUtxos api amount paginate)
+  where
+    amount = maybe (asOneOf undefined) asOneOf mAmount
+    paginate = (maybe (asOneOf undefined) asOneOf mPaginate)
 
 getCollateral :: Api -> Cbor -> Aff (Maybe (Array Cbor))
 getCollateral api amount =
@@ -136,7 +139,7 @@ foreign import _getNetworkId :: Api -> Effect (Promise NetworkId)
 foreign import _getRewardAddresses :: Api -> Effect (Promise (Array Cbor))
 foreign import _getUnusedAddresses :: Api -> Effect (Promise (Array Cbor))
 foreign import _getUsedAddresses :: Api -> UndefinedOr Paginate -> Effect (Promise (Array Cbor))
-foreign import _getUtxos :: Api -> UndefinedOr Paginate -> Effect (Promise (Nullable (Array Cbor)))
+foreign import _getUtxos :: Api -> UndefinedOr Cbor -> UndefinedOr Paginate -> Effect (Promise (Nullable (Array Cbor)))
 foreign import _signTx :: Api -> Cbor -> Boolean -> Effect (Promise Cbor)
 foreign import _signData :: Api -> Cbor -> Bytes -> Effect (Promise DataSignature)
 foreign import _isEnabled :: WalletName -> Effect (Promise Boolean)
