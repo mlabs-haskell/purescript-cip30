@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 
-import Cardano.Wallet.Cip30 (WalletName, enable, getUsedAddresses, getUtxos)
+import Cardano.Wallet.Cip30 (WalletName, enable, getCollateral, getUsedAddresses, getUtxos)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Newtype (wrap)
 import Effect (Effect)
@@ -32,6 +32,10 @@ main = launchAff_ do
     -- 182a = hex(value of 42 lovelace)
     utxos <- getUtxos api (Just "182a") (Just { limit: 3, page: 0 })
     log $ "getUtxos(\"182a\", { limit: 3, page: 0}): " <> show utxos
+  do
+    -- 182a = hex(value of 42 lovelace)
+    utxos <- getCollateral api "182a"
+    log $ "getCollateral(\"182a\"): " <> show utxos
   do
     addrs <- getUsedAddresses api Nothing
     log $ "getUsedAddresses(): " <> show addrs
