@@ -48,6 +48,8 @@
                 easy-ps.spago2nix
                 nodePackages.eslint
                 nodePackages.prettier
+                esbuild
+                python3 # for http.server to serve the test
                 fd
                 git
                 nodejs-18_x
@@ -56,11 +58,7 @@
           };
 
           packages = {
-            # Example package. Build with `nix build` or `nix build .#myapp`.
             default = self'.packages.myapp;
-            myapp = pkgs.writeShellScriptBin "myapp" ''
-              echo "Hello, World!"
-            '';
           };
 
           # Example flake checks. Run with `nix flake check --keep-going`

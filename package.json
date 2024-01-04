@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-        "esbuild": "^0.19.10"
+        "esbuild": "^0.19.11"
     },
     "prettier": {
         "arrowParens": "avoid",
