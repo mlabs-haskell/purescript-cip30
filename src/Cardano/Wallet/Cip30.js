@@ -20,15 +20,15 @@ export const _getExtensions = api => () => api.getExtensions();
 export const _getBalance = api => () => api.getBalance();
 export const _getChangeAddress = api => () => api.getChangeAddress();
 export const _getCollateral = api => amount => () => {
-    const amount = typeof amount === "undefined" ? undefined : { amount };
-    if (typeof api.getCollateral === 'function') {
-        return api.getCollateral(amount);
-    } else if (typeof api.experimental.getCollateral === 'function') {
-        // nami provides getCollateral under `experimental`
-        return api.experimental.getCollateral(amount);
-    } else {
-        throw "CIP-30 getCollateral not supported!";
-    }
+  amount = typeof amount === "undefined" ? undefined : { amount };
+  if (typeof api.getCollateral === "function") {
+    return api.getCollateral(amount);
+  } else if (typeof api.experimental.getCollateral === "function") {
+    // nami provides getCollateral under `experimental`
+    return api.experimental.getCollateral(amount);
+  } else {
+    throw "CIP-30 getCollateral not supported!";
+  }
 };
 export const _getNetworkId = api => () => api.getNetworkId();
 export const _getRewardAddresses = api => () => api.getRewardAddresses();

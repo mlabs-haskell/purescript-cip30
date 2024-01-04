@@ -57,10 +57,6 @@
             };
           };
 
-          packages = {
-            default = self'.packages.myapp;
-          };
-
           # Example flake checks. Run with `nix flake check --keep-going`
           checks = {
             formatting-check = pkgs.runCommand "formatting-check"
