@@ -1,7 +1,7 @@
 "use strict";
 
 export const _getWalletApi = walletName => extensions => () =>
-  window.cardano[walletName].enable({ extensions });
+  window.cardano[walletName].enable({ extensions: extensions.slice() });
 
 export const _isEnabled = walletName => () =>
   window.cardano[walletName].isEnabled();
